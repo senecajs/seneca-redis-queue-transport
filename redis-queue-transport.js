@@ -122,12 +122,15 @@ module.exports = function (options) {
 
       var waiting = false
       function next() {
+        waiting = true
         redis_in.brpop(topic+'_res'+'/'+seneca.id, 0, function(err, reply) {
           if (err) {
             seneca.log.error('transport', 'client-redis-brpop', err)
+            waiting = false
             return;
           }
           if (!reply.length) {
+            waiting = false
             return;
           }
           on_message(topic, reply[1])
