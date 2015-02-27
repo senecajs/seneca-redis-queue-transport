@@ -48,7 +48,7 @@ module.exports = function (options) {
       tu.handle_request(seneca, data, listen_options, function (out) {
         if (null === out) return;
         var outstr = tu.stringifyJSON(seneca, 'listen-' + type, out)
-        redis_out.lpush(topic + '_res', outstr, function(err, reply) {
+        redis_out.lpush(topic+'_res'+'/'+data.origin, outstr, function(err, reply) {
           if (err) {
             seneca.log.error('transport', 'redis-queue', err)
           }
@@ -122,7 +122,7 @@ module.exports = function (options) {
 
       var waiting = false
       function next() {
-        redis_in.brpop(topic + '_res', 0, function(err, reply) {
+        redis_in.brpop(topic+'_res'+'/'+seneca.id, 0, function(err, reply) {
           if (err) {
             seneca.log.error('transport', 'client-redis-brpop', err)
             return;
