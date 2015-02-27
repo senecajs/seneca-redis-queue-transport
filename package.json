@@ -1,0 +1,40 @@
+{
+  "name": "seneca-redis-queue-transport",
+  "version": "0.1.0",
+  "description": "Seneca Redis Queue Transport",
+  "main": "redis-queue-transport.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/iantocristian/seneca-redis-queue-transport.git"
+  },
+  "keywords": [
+    "seneca",
+    "transport",
+    "plugin",
+    "redis",
+    "queue"
+  ],
+  "contributors": [
+    "Ianto Cristian",
+    "Richard Rodger (http://richardrodger.com)"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "redis": "~0.12.1",
+    "lodash": "~3.3.1"
+  },
+  "devDependencies": {
+    "mocha": "~2.1.0",
+    "async": "~0.9.0",
+    "seneca": "plugin",
+    "seneca-transport-test": "~0.1.2"
+  },
+  "files": [
+    "README.md",
+    "LICENSE.txt",
+    "redis-queue-transport.js"
+  ]
+}
