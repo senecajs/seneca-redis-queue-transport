@@ -1,6 +1,6 @@
 {
   "name": "seneca-redis-queue-transport",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Seneca Redis Queue Transport",
   "main": "redis-queue-transport.js",
   "scripts": {
