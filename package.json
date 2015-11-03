@@ -3,12 +3,16 @@
   "version": "0.1.1",
   "description": "Seneca Redis Queue Transport",
   "main": "redis-queue-transport.js",
+  "license": "MIT",
+  "author": "Ianto Cristian",
+  "contributors": [
+    "Ianto Cristian",
+    "Richard Rodger (http://richardrodger.com)",
+    "Cristian Kiss (https://github.com/ckiss)"
+  ],
   "scripts": {
-    "test": "node_modules/.bin/mocha test/*.test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/iantocristian/seneca-redis-queue-transport.git"
+    "test": "lab test/*.test.js -r console -v -L -m 3000",
+    "annotate": "docco redis-queue-transport.js -o doc"
   },
   "keywords": [
     "seneca",
@@ -17,20 +21,24 @@
     "redis",
     "queue"
   ],
-  "contributors": [
-    "Ianto Cristian",
-    "Richard Rodger (http://richardrodger.com)"
-  ],
-  "license": "MIT",
+  "homepage": "https://github.com/senecajs/seneca-redis-queue-transport",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/iantocristian/seneca-redis-queue-transport.git"
+  },
+  "bugs": {
+    "url": "https://github.com/senecajs/seneca-redis-queue-transport/issues"
+  },
   "dependencies": {
-    "redis": "~0.12.1",
-    "lodash": "~3.3.1"
+    "redis": "0.12.1",
+    "lodash": "3.3.1"
   },
   "devDependencies": {
-    "mocha": "~2.1.0",
-    "async": "~0.9.0",
+    "async": "0.9.0",
+    "docco": "0.7.0",
+    "lab": "6.2.0",
     "seneca": "plugin",
-    "seneca-transport-test": "~0.1.2"
+    "seneca-transport-test": "0.1.2"
   },
   "files": [
     "README.md",

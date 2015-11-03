@@ -1,5 +1,5 @@
 /* Copyright (c) 2015 Cristian Ianto, MIT License */
-'use strict';
+'use strict'
 
 var _ = require('lodash')
 var async = require('async')
@@ -14,46 +14,49 @@ var NUM_SERVERS = 3
 if (cluster.isMaster) {
 
   var workers = {}
-  var clientworkers = [];
-  var serverworkers = [];
+  var clientworkers = []
+  var serverworkers = []
 
   var tasks = {}
   for (var idx = 0; idx < NUM_TASKS; idx++) {
     tasks[idx] = {id: idx}
   }
 
+  var i
+  var worker
+
   // start clients
-  for (var i = 0; i < NUM_CLIENTS; i++) {
-    var worker = cluster.fork({TYPE: 'client'})
+  for (i = 0; i < NUM_CLIENTS; i++) {
+    worker = cluster.fork({TYPE: 'client'})
     workers[worker.id] = worker
     clientworkers.push(worker)
     worker.on('message', function (msg) {
       if (msg.event === 'callback') {
         console.log(_.padLeft(msg.task.id, 4, '0') + '-callback' + ' ' + this.process.pid)
-        results[msg.task.id] = results[msg.task.id] || {};
+        results[msg.task.id] = results[msg.task.id] || {}
         if (msg.err) {
-          results[msg.task.id].errcount = (results[msg.task.id].errcount || 0) + 1;
+          results[msg.task.id].errcount = (results[msg.task.id].errcount || 0) + 1
         }
         else {
-          results[msg.task.id].cbcount = (results[msg.task.id].cbcount || 0) + 1;
+          results[msg.task.id].cbcount = (results[msg.task.id].cbcount || 0) + 1
         }
       }
-    });
+    })
   }
 
   // start servers
   var results = {}
-  for (var i = 0; i < NUM_SERVERS; i++) {
-    var worker = cluster.fork()
+  for (i = 0; i < NUM_SERVERS; i++) {
+    worker = cluster.fork()
     workers[worker.id] = worker
     serverworkers.push(worker)
     worker.on('message', function (msg) {
       if (msg.event === 'exec') {
         console.log(_.padLeft(msg.task.id, 4, '0') + '-exec' + ' ' + this.process.pid)
-        results[msg.task.id] = results[msg.task.id] || {};
-        results[msg.task.id].evcount = (results[msg.task.id].evcount || 0) + 1;
+        results[msg.task.id] = results[msg.task.id] || {}
+        results[msg.task.id].evcount = (results[msg.task.id].evcount || 0) + 1
       }
-    });
+    })
   }
 
   async.each(_.values(workers), function (worker, done) { // wait for all workers to start
@@ -65,12 +68,12 @@ if (cluster.isMaster) {
   }, function () { // then act
     // signal clients to act
     _.each(tasks, function (task, idx) {
-      clientworkers[idx%NUM_CLIENTS].send({cmd: 'exec', task: task})
+      clientworkers[idx % NUM_CLIENTS].send({cmd: 'exec', task: task})
     })
 
     // allow enough time for the test to complete before killing the workers
-    setTimeout(function() {
-      _.each(workers, function(worker) {
+    setTimeout(function () {
+      _.each(workers, function (worker) {
         worker.kill()
       })
     }, 10 * 1e3)
@@ -82,7 +85,7 @@ if (cluster.isMaster) {
     })
   }, function () {
     _.each(tasks, function (task) {
-      //actions handled by handle 'once' listeners should be processed once and only once
+      // actions handled by handle 'once' listeners should be processed once and only once
       assert(results[task.id], 'processed')
       // no errors
       assert.equal(results[task.id].errcount || 0, 0, 'error count')
@@ -101,14 +104,14 @@ else {
 
   si.use('../redis-queue-transport')
 
-  if ('client' === process.env['TYPE']) {
+  if (process.env['TYPE'] === 'client') {
     si.client({type: 'redis-queue', pin: 'role:test,cmd:*'})
 
     process.on('message', function (msg) {
       if (msg.cmd === 'exec') {
         si.act({role: 'test', cmd: 'exec', task: msg.task}, function (err) {
           if (err) {
-            //console.error(err);
+            // console.error(err);
           }
           process.send({event: 'callback', task: msg.task, err: err})
         })
