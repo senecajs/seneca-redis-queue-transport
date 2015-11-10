@@ -12,7 +12,6 @@ var NUM_CLIENTS = 3
 var NUM_SERVERS = 3
 
 if (cluster.isMaster) {
-
   var workers = {}
   var clientworkers = []
   var serverworkers = []
@@ -97,7 +96,6 @@ if (cluster.isMaster) {
   })
 }
 else {
-
   var si = seneca({
     timeout: 5 * 1e3
   })
@@ -131,6 +129,5 @@ else {
   si.ready(function () {
     process.send({event: 'ready'})
   })
-
 }
 
