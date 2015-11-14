@@ -8,7 +8,6 @@ var describe = lab.describe
 var test = require('seneca-transport-test')
 
 describe('redis-transport', function () {
-
   lab.test('happy-any', function (fin) {
     test.foo_test('redis-queue-transport', require, fin, 'redis-queue', -6379)
   })
