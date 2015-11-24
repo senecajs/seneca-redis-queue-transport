@@ -2,26 +2,27 @@
 'use strict'
 
 var _ = require('lodash')
-var redis = require('redis')
+var Redis = require('redis')
+
+var internals = {
+  defaults: {
+    'redis-queue': {
+      timeout: 22222,
+      type: 'redis-queue',
+      host: 'localhost',
+      port: 6379
+    }
+  }
+}
 
 module.exports = function (options) {
   var seneca = this
   var plugin = 'redis-queue-transport'
 
   var so = seneca.options()
+  internals.defaults.timeout = so.timeout ? (so.timeout - 555) : internals.defaults.timeout
 
-  options = seneca.util.deepextend(
-    {
-      'redis-queue': {
-        timeout: so.timeout ? so.timeout - 555 : 22222,
-        type: 'redis-queue',
-        host: 'localhost',
-        port: 6379
-      }
-    },
-    so.transport,
-    options
-  )
+  options = seneca.util.deepextend(internals.defaults, so.transport, options)
 
   var tu = seneca.export('transport/utils')
 
@@ -33,8 +34,8 @@ module.exports = function (options) {
     var type = args.type
     var listen_options = seneca.util.clean(_.extend({}, options[type], args))
 
-    var redis_in = redis.createClient(listen_options.port, listen_options.host)
-    var redis_out = redis.createClient(listen_options.port, listen_options.host)
+    var redis_in = Redis.createClient(listen_options.port, listen_options.host)
+    var redis_out = Redis.createClient(listen_options.port, listen_options.host)
 
     handle_events(redis_in)
     handle_events(redis_out)
@@ -43,7 +44,10 @@ module.exports = function (options) {
       var data = tu.parseJSON(seneca, 'listen-' + type, msgstr)
 
       tu.handle_request(seneca, data, listen_options, function (out) {
-        if (out === null) return
+        if (out === null) {
+          return
+        }
+
         var outstr = tu.stringifyJSON(seneca, 'listen-' + type, out)
         redis_out.lpush(topic + '_res' + '/' + data.origin, outstr, function (err, reply) {
           if (err) {
@@ -103,8 +107,8 @@ module.exports = function (options) {
     tu.make_client(make_send, client_options, clientdone)
 
     function make_send (spec, topic, send_done) {
-      var redis_in = redis.createClient(client_options.port, client_options.host)
-      var redis_out = redis.createClient(client_options.port, client_options.host)
+      var redis_in = Redis.createClient(client_options.port, client_options.host)
+      var redis_out = Redis.createClient(client_options.port, client_options.host)
 
       handle_events(redis_in)
       handle_events(redis_out)
