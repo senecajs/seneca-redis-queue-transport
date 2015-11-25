@@ -2,6 +2,7 @@
 > A [Seneca.js][] transport plugin
 
 # seneca-redis-queue-transport
+[![npm version][npm-badge]][npm-url]
 [![Build Status][travis-badge]][travis-url]
 [![Gitter][gitter-badge]][gitter-url]
 
@@ -10,9 +11,8 @@ This lets you send messsages via [redis](http://redis.io/).
 
 ALSO READ: The [seneca-transport](http://github.com/rjrodger/seneca-transport) readme has lots of introductory material about message transports. Start there if you have not used a message transport before.
 
-- __Version:__ 0.1.0
-- __Tested on:__ Seneca 0.7
-- __Node:__ 0.10, 0.12, 4
+- __Tested on:__ Seneca 0.7, 0.8
+- __Node:__ 0.10, 0.12, 4, 5
 - __License:__ [MIT][]
 
 seneca-redis-queue-transport's source can be read in an annotated fashion by,
@@ -65,6 +65,8 @@ documentation, examples, extra testing, or new features please get in touch.
 ## License
 Copyright Richard Rodger and other contributors 2015, Licensed under [MIT][].
 
+[npm-badge]: https://badge.fury.io/js/seneca-redis-queue-transport.svg
+[npm-url]: https://badge.fury.io/js/seneca-redis-queue-transport
 [travis-badge]: https://travis-ci.org/senecajs/seneca-redis-queue-transport.svg
 [travis-url]: https://travis-ci.org/senecajs/seneca-redis-queue-transport
 [gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
