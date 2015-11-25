@@ -1,6 +1,6 @@
 {
   "name": "seneca-redis-queue-transport",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Seneca Redis Queue Transport",
   "main": "redis-queue-transport.js",
   "license": "MIT",
