@@ -24,7 +24,7 @@ var internals = {
 var brpop = require('redis').RedisClient.prototype.brpop
 
 describe('redis-transport', function () {
-  test('bad brpop', function (fin) {
+  test('brpop returns error', function (fin) {
     var seneca_srv = require('seneca')({ log: 'silent' })
       .use(redisQueueTransport)
 
@@ -41,6 +41,25 @@ describe('redis-transport', function () {
       foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
     })
   })
+
+  test('brpop returns empty reply', function (fin) {
+    var seneca_srv = require('seneca')({ log: 'silent' })
+      .use(redisQueueTransport)
+
+    var service = foo_service(seneca_srv, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
+
+    service.ready(function () {
+      var seneca_client = require('seneca')({log: 'silent', debug: {undead: true}, errhandler: function (err) {
+        assert.equal('seneca: Action  failed: [TIMEOUT].', err.message)
+        require('redis').RedisClient.prototype.brpop = brpop
+        fin()
+      }, timeout: 111})
+        .use(redisQueueTransport)
+
+      var reply = []
+      foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port, reply)
+    })
+  })
 })
 
 function foo_plugin () {
@@ -55,14 +74,14 @@ function foo_service (seneca, type, port) {
     .listen({type: type, port: (port < 0 ? -1 * port : port)})
 }
 
-function foo_run (seneca, type, port) {
+function foo_run (seneca, type, port, reply) {
   var pn = port < 0 ? -1 * port : port
 
   return seneca
     .client({type: type, port: pn})
     .ready(function () {
       require('redis').RedisClient.prototype.brpop = function (key, timeout, callback) {
-        return callback('some err', null)
+        return reply ? callback(null, reply) : callback('some err', null)
       }
 
       this.act('foo:1,bar:"A"')
