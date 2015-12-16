@@ -52,12 +52,12 @@ describe('redis-transport', function () {
       var seneca_client = require('seneca')({log: 'silent', debug: {undead: true}, errhandler: function (err) {
         assert.equal('seneca: Action  failed: [TIMEOUT].', err.message)
         require('redis').RedisClient.prototype.brpop = brpop
-        fin()
+        foo_close(client, service, fin)
       }, timeout: 111})
         .use(redisQueueTransport)
 
       var reply = []
-      foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port, reply)
+      var client = foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port, reply)
     })
   })
 })
@@ -86,4 +86,14 @@ function foo_run (seneca, type, port, reply) {
 
       this.act('foo:1,bar:"A"')
     })
+}
+
+function foo_close (client, service, fin) {
+  client.close(function (err) {
+    if (err) return fin(err)
+
+    service.close(function (err) {
+      return fin(err)
+    })
+  })
 }
