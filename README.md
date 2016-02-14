@@ -58,6 +58,20 @@ require('seneca')()
   .listen( {type:'redis-queue',pin:'foo:two,bar:*'} )
 ```
 
+## Available Options
+
+```js
+require('seneca')()
+  .use('redis-queue-transport', {
+    'redis-queue': {
+      timeout: 22222,
+      type: 'redis-queue',
+      host: 'localhost',
+      port: 6379
+    }
+  })
+```
+
 ## Contributing
 The [Senecajs org][] encourage open participation. If you feel you can help in any way, be it with
 documentation, examples, extra testing, or new features please get in touch.
