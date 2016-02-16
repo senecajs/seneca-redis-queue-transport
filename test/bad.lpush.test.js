@@ -2,9 +2,10 @@
 'use strict'
 
 var Lab = require('lab')
-var assert = require('assert')
+var Code = require('code')
+var expect = Code.expect
 
-var redisQueueTransport = require('../redis-queue-transport.js')
+var RedisQueueTransport = require('../redis-queue-transport.js')
 
 // Test shortcuts
 var lab = exports.lab = Lab.script()
@@ -24,23 +25,44 @@ var internals = {
 var lpush = require('redis').RedisClient.prototype.lpush
 
 describe('redis-transport', function () {
-  test('bad lpush', function (fin) {
+  test('bad lpush client', function (fin) {
     var seneca_srv = require('seneca')({log: 'silent'})
-      .use(redisQueueTransport)
+      .use(RedisQueueTransport)
 
     var service = foo_service(seneca_srv, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
 
     service.ready(function () {
       var seneca_client = require('seneca')({
         log: 'silent', debug: {undead: true}, errhandler: function (err) {
-          assert.equal('seneca: Action  failed: [TIMEOUT].', err.message)
+          expect(err.message).to.startWith('seneca: Action  failed: [TIMEOUT')
           require('redis').RedisClient.prototype.lpush = lpush
           foo_close(client, service, fin)
         }, timeout: 111
       })
-        .use(redisQueueTransport)
+        .use(RedisQueueTransport)
 
       var client = foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
+    })
+  })
+
+  test('bad lpush server', function (fin) {
+    var seneca_srv = require('seneca')({log: 'silent'})
+      .use(RedisQueueTransport)
+
+    var service = foo_service(seneca_srv, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
+
+    service.ready(function () {
+      var seneca_client = require('seneca')({
+        log: 'silent', debug: {undead: true}, errhandler: function (err) {
+          expect(err.message).to.startWith('seneca: Action  failed: [TIMEOUT')
+          require('redis').RedisClient.prototype.lpush = lpush
+          foo_close(client, service, fin)
+        }, timeout: 111
+      })
+        .use(RedisQueueTransport)
+
+      var server = true
+      var client = foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port, server)
     })
   })
 })
@@ -57,14 +79,26 @@ function foo_service (seneca, type, port) {
     .listen({type: type, port: (port < 0 ? -1 * port : port)})
 }
 
-function foo_run (seneca, type, port) {
+function foo_run (seneca, type, port, server) {
   var pn = port < 0 ? -1 * port : port
 
   return seneca
     .client({type: type, port: pn})
     .ready(function () {
-      require('redis').RedisClient.prototype.lpush = function (key, timeout, callback) {
-        return callback('lpush err', null)
+      if (server) {
+        require('redis').RedisClient.prototype.lpush = function (key, arg, callback) {
+          if (key && key === 'seneca_any_act') {
+            lpush.call(this)
+          }
+          else {
+            return callback('lpush err', null)
+          }
+        }
+      }
+      else {
+        require('redis').RedisClient.prototype.lpush = function (key, arg, callback) {
+          return callback('lpush err', null)
+        }
       }
 
       this.act('foo:1,bar:"A"')

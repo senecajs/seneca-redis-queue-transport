@@ -2,7 +2,8 @@
 'use strict'
 
 var Lab = require('lab')
-var assert = require('assert')
+var Code = require('code')
+var expect = Code.expect
 
 var TransportTest = require('seneca-transport-test')
 
@@ -28,8 +29,8 @@ describe('redis-transport', function () {
       .use('../redis-queue-transport.js')
 
     var so = a.options()
-    assert.ok(so.timeout)
-    assert.equal(so.timeout, 23555)
+    expect(so.timeout).to.exist()
+    expect(so.timeout).to.equal(23555)
 
     var b = require('seneca')({
       log: 'silent',
@@ -38,7 +39,7 @@ describe('redis-transport', function () {
       .use('../redis-queue-transport.js')
 
     so = b.options()
-    assert.ok(!so.timeout)
+    expect(so.timeout).to.be.null()
 
     done()
   })
