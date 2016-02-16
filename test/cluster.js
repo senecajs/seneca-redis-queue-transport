@@ -2,16 +2,17 @@
 'use strict'
 
 var _ = require('lodash')
-var async = require('async')
-var assert = require('assert')
-var cluster = require('cluster')
-var seneca = require('seneca')
+var Async = require('async')
+var Cluster = require('cluster')
+var Seneca = require('seneca')
+var Code = require('code')
+var expect = Code.expect
 
 var NUM_TASKS = 20
 var NUM_CLIENTS = 3
 var NUM_SERVERS = 3
 
-if (cluster.isMaster) {
+if (Cluster.isMaster) {
   var workers = {}
   var clientworkers = []
   var serverworkers = []
@@ -26,7 +27,7 @@ if (cluster.isMaster) {
 
   // start clients
   for (i = 0; i < NUM_CLIENTS; i++) {
-    worker = cluster.fork({TYPE: 'client'})
+    worker = Cluster.fork({TYPE: 'client'})
     workers[worker.id] = worker
     clientworkers.push(worker)
     worker.on('message', function (msg) {
@@ -46,7 +47,7 @@ if (cluster.isMaster) {
   // start servers
   var results = {}
   for (i = 0; i < NUM_SERVERS; i++) {
-    worker = cluster.fork()
+    worker = Cluster.fork()
     workers[worker.id] = worker
     serverworkers.push(worker)
     worker.on('message', function (msg) {
@@ -58,7 +59,7 @@ if (cluster.isMaster) {
     })
   }
 
-  async.each(_.values(workers), function (worker, done) { // wait for all workers to start
+  Async.each(_.values(workers), function (worker, done) { // wait for all workers to start
     worker.on('message', function (msg) {
       if (msg.event === 'ready') {
         return done()
@@ -78,25 +79,25 @@ if (cluster.isMaster) {
     }, 10 * 1e3)
   })
 
-  async.each(_.values(workers), function (worker, done) { // wait for all workers to exit
+  Async.each(_.values(workers), function (worker, done) { // wait for all workers to exit
     worker.on('exit', function () {
       return done()
     })
   }, function () {
     _.each(tasks, function (task) {
       // actions handled by handle 'once' listeners should be processed once and only once
-      assert(results[task.id], 'processed')
+      expect(results[task.id]).to.exist()
       // no errors
-      assert.equal(results[task.id].errcount || 0, 0, 'error count')
+      expect(results[task.id].errcount || 0).to.equal(0)
       // executed once
-      assert.equal(results[task.id].evcount, 1, 'exec count ' + results[task.id].evcount)
+      expect(results[task.id].evcount).to.equal(1)
       // called back once
-      assert.equal(results[task.id].cbcount, 1, 'callback count')
+      expect(results[task.id].cbcount).to.equal(1)
     })
   })
 }
 else {
-  var si = seneca({
+  var si = Seneca({
     timeout: 5 * 1e3
   })
 

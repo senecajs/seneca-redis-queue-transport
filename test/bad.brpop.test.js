@@ -2,9 +2,10 @@
 'use strict'
 
 var Lab = require('lab')
-var assert = require('assert')
+var Code = require('code')
+var expect = Code.expect
 
-var redisQueueTransport = require('../redis-queue-transport.js')
+var RedisQueueTransport = require('../redis-queue-transport.js')
 
 // Test shortcuts
 var lab = exports.lab = Lab.script()
@@ -26,17 +27,17 @@ var brpop = require('redis').RedisClient.prototype.brpop
 describe('redis-transport', function () {
   test('brpop returns error', function (fin) {
     var seneca_srv = require('seneca')({ log: 'silent' })
-      .use(redisQueueTransport)
+      .use(RedisQueueTransport)
 
     var service = foo_service(seneca_srv, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
 
     service.ready(function () {
       var seneca_client = require('seneca')({log: 'silent', debug: {undead: true}, errhandler: function (err) {
-        assert.equal('seneca: Action  failed: [TIMEOUT].', err.message)
+        expect(err.message).to.startWith('seneca: Action  failed: [TIMEOUT')
         require('redis').RedisClient.prototype.brpop = brpop
         fin()
       }, timeout: 111})
-        .use(redisQueueTransport)
+        .use(RedisQueueTransport)
 
       foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
     })
@@ -44,17 +45,17 @@ describe('redis-transport', function () {
 
   test('brpop returns empty reply', function (fin) {
     var seneca_srv = require('seneca')({ log: 'silent' })
-      .use(redisQueueTransport)
+      .use(RedisQueueTransport)
 
     var service = foo_service(seneca_srv, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port)
 
     service.ready(function () {
       var seneca_client = require('seneca')({log: 'silent', debug: {undead: true}, errhandler: function (err) {
-        assert.equal('seneca: Action  failed: [TIMEOUT].', err.message)
+        expect(err.message).to.startWith('seneca: Action  failed: [TIMEOUT')
         require('redis').RedisClient.prototype.brpop = brpop
         foo_close(client, service, fin)
       }, timeout: 111})
-        .use(redisQueueTransport)
+        .use(RedisQueueTransport)
 
       var reply = []
       var client = foo_run(seneca_client, internals.defaults['redis-queue'].type, internals.defaults['redis-queue'].port, reply)
