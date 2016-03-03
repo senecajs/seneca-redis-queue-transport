@@ -35,12 +35,14 @@ module.exports = function (options) {
     var type = args.type
     var listen_options = seneca.util.clean(_.extend({}, options[type], args))
 
+    var redis_in, redis_out;
     if (_.isUndefined(listen_options.url)) {
-      var redis_in = Redis.createClient(listen_options.port, listen_options.host)
-      var redis_out = Redis.createClient(listen_options.port, listen_options.host)
-    } else {
-      var redis_in = Redis.createClient(listen_options.url)
-      var redis_out = Redis.createClient(listen_options.url)
+      redis_in = Redis.createClient(listen_options.port, listen_options.host)
+      redis_out = Redis.createClient(listen_options.port, listen_options.host)
+    }
+    else {
+      redis_in = Redis.createClient(listen_options.url)
+      redis_out = Redis.createClient(listen_options.url)
     }
 
     handle_events(redis_in)
