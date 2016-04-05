@@ -11,7 +11,7 @@
     "Cristian Kiss (https://github.com/ckiss)"
   ],
   "scripts": {
-    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 96",
+    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 95",
     "lint": "lab -P test -dL",
     "annotate": "docco redis-queue-transport.js -o doc"
   },
