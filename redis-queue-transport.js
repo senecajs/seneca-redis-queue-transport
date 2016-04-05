@@ -77,20 +77,18 @@ module.exports = function (options) {
           setImmediate(next)
         })
       }
-      redis_in.on('idle', function () {
-        setImmediate(function () {
-          if (!waiting) {
-            next()
-          }
-        })
+      setImmediate(function () {
+        if (!waiting) {
+          next()
+        }
       })
     })
 
     seneca.add('role:seneca,cmd:close', function (close_args, done) {
       var closer = this
 
-      redis_in.end()
-      redis_out.end()
+      redis_in.end(true)
+      redis_out.end(true)
       closer.prior(close_args, done)
     })
 
@@ -137,12 +135,10 @@ module.exports = function (options) {
           setImmediate(next)
         })
       }
-      redis_in.on('idle', function () {
-        setImmediate(function () {
-          if (!waiting) {
-            next()
-          }
-        })
+      setImmediate(function () {
+        if (!waiting) {
+          next()
+        }
       })
 
       send_done(null, function (args, done) {
@@ -159,8 +155,8 @@ module.exports = function (options) {
       seneca.add('role:seneca,cmd:close', function (close_args, done) {
         var closer = this
 
-        redis_in.end()
-        redis_out.end()
+        redis_in.quit()
+        redis_out.quit()
         closer.prior(close_args, done)
       })
     }
@@ -168,7 +164,7 @@ module.exports = function (options) {
 
   function handle_events (redisclient) {
     // Die if you can't connect initially
-    redisclient.on('ready', function () {
+    redisclient.once('ready', function () {
       redisclient.on('error', function (err) {
         seneca.log.error('transport', 'redis', err)
       })

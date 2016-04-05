@@ -12,7 +12,7 @@ var lab = exports.lab = Lab.script()
 var describe = lab.describe
 var test = lab.test
 
-describe('redis-transport', function () {
+describe('redis-transport', { timeout: 5000 }, function () {
   test('happy-any', function (done) {
     TransportTest.foo_test('redis-queue-transport', require, done, 'redis-queue', -6379)
   })
