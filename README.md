@@ -42,15 +42,15 @@ npm install seneca-redis-queue-transport
 You'll also need [redis](http://redis.io/).
 
 ## To run tests with Docker
-Build the PostgreSQL Docker image:
+Build the Redis Docker image:
 ```sh
 npm run build
 ```
-Start the PostgreSQL container:
+Start the Redis container:
 ```sh
 npm run start
 ```
-Stop the PostgreSQL container:
+Stop the Redis container:
 ```sh
 npm run stop
 ```
@@ -58,9 +58,6 @@ While the container is running you can run the tests into another terminal:
 ```sh
 npm run test
 ```
-#### Testing for Mac users
-Before the tests can be run you must run `docker-machine env default` and copy the docker host address (example: '192.168.99.100').
-This address must be inserted into the test/default_config.json file as the value for the host variable. The tests can now be run.
 
 ## Quick Example
 
