@@ -13,7 +13,10 @@
   "scripts": {
     "test": "lab test/*.test.js -r console -v -L -m 3000 -t 95",
     "lint": "lab -P test -dL",
-    "annotate": "docco redis-queue-transport.js -o doc"
+    "annotate": "docco redis-queue-transport.js -o doc",
+    "build": "docker-compose build",
+    "start": "docker-compose up",
+    "stop": "docker-compose kill"
   },
   "keywords": [
     "seneca",

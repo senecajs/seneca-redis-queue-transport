@@ -4,8 +4,10 @@
 var Lab = require('lab')
 var Code = require('code')
 var expect = Code.expect
+var _ = require('lodash')
 
 var RedisQueueTransport = require('../redis-queue-transport.js')
+var DefaultConfig = require('./default_config.json')
 
 // Test shortcuts
 var lab = exports.lab = Lab.script()
@@ -14,13 +16,10 @@ var test = lab.test
 
 var internals = {
   defaults: {
-    'redis-queue': {
-      type: 'redis-queue',
-      host: 'localhost',
-      port: 6379
-    }
+    'redis-queue': {}
   }
 }
+_.assign(internals.defaults['redis-queue'], DefaultConfig)
 
 var lpush = require('redis').RedisClient.prototype.lpush
 
