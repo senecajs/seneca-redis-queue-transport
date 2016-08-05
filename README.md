@@ -91,7 +91,7 @@ The [Senecajs org][] encourage open participation. If you feel you can help in a
 documentation, examples, extra testing, or new features please get in touch.
 
 ## License
-Copyright Richard Rodger and other contributors 2015, Licensed under [MIT][].
+Copyright Richard Rodger and other contributors 2015-2016, Licensed under [MIT][].
 
 [npm-badge]: https://badge.fury.io/js/seneca-redis-queue-transport.svg
 [npm-url]: https://badge.fury.io/js/seneca-redis-queue-transport
