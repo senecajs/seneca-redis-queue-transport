@@ -51,8 +51,6 @@ describe('redis-transport', { timeout: 5000 }, function () {
     so = c.options()
     expect(so.url).to.equal('redis://localhost:6379')
 
-    console.log(c);
-
     done()
   })
 })
