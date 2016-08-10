@@ -112,8 +112,15 @@ module.exports = function (options) {
     tu.make_client(make_send, client_options, clientdone)
 
     function make_send (spec, topic, send_done) {
-      var redis_in = Redis.createClient(client_options.port, client_options.host)
-      var redis_out = Redis.createClient(client_options.port, client_options.host)
+      var redis_in, redis_out
+      if (listen_options.hasOwnProperty('url')) {
+        redis_in = Redis.createClient(listen_options.url)
+        redis_out = Redis.createClient(listen_options.url)
+      }
+      else {
+        redis_in = Redis.createClient(listen_options.port, listen_options.host)
+        redis_out = Redis.createClient(listen_options.port, listen_options.host)
+      }
 
       handle_events(redis_in)
       handle_events(redis_out)
