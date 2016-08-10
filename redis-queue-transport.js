@@ -113,13 +113,13 @@ module.exports = function (options) {
 
     function make_send (spec, topic, send_done) {
       var redis_in, redis_out
-      if (listen_options.hasOwnProperty('url')) {
-        redis_in = Redis.createClient(listen_options.url)
-        redis_out = Redis.createClient(listen_options.url)
+      if (client_options.hasOwnProperty('url')) {
+        redis_in = Redis.createClient(client_options.url)
+        redis_out = Redis.createClient(client_options.url)
       }
       else {
-        redis_in = Redis.createClient(listen_options.port, listen_options.host)
-        redis_out = Redis.createClient(listen_options.port, listen_options.host)
+        redis_in = Redis.createClient(client_options.port, client_options.host)
+        redis_out = Redis.createClient(client_options.port, client_options.host)
       }
 
       handle_events(redis_in)
