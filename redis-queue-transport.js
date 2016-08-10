@@ -35,14 +35,15 @@ module.exports = function (options) {
     var listen_options = seneca.util.clean(_.extend({}, options[type], args))
 
     var redis_in, redis_out
-    if(listen_options.hasOwnProperty('url')){
+    if (listen_options.hasOwnProperty('url')) {
       redis_in = Redis.createClient(listen_options.url)
       redis_out = Redis.createClient(listen_options.url)
-    } else {
+    }
+    else {
       redis_in = Redis.createClient(listen_options.port, listen_options.host)
       redis_out = Redis.createClient(listen_options.port, listen_options.host)
     }
-    
+
     handle_events(redis_in)
     handle_events(redis_out)
 
