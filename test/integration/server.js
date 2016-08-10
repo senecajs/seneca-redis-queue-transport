@@ -1,4 +1,4 @@
-var Transport = require('./redis-queue-transport')
+var Transport = require('../../redis-queue-transport')
 var Seneca = require('seneca')
 
 var color = function () {
