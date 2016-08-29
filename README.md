@@ -11,8 +11,7 @@ This lets you send messsages via [redis](http://redis.io/).
 
 ALSO READ: The [seneca-transport](http://github.com/rjrodger/seneca-transport) readme has lots of introductory material about message transports. Start there if you have not used a message transport before.
 
-- __Tested on:__ Seneca 0.7, 0.8
-- __Node:__ 0.10, 0.12, 4, 5
+- __Node:__ 4, 6
 - __License:__ [MIT][]
 
 seneca-redis-queue-transport's source can be read in an annotated fashion by,
@@ -31,6 +30,9 @@ If you're using this module, and need help, you can:
 If you are new to Seneca in general, please take a look at [senecajs.org][]. We have everything from
 tutorials to sample apps to help get you up and running quickly.
 
+### Seneca compatibility
+
+Supports Seneca versions **1.x** - **3.x**
 
 ## Install
 To install, simply use npm. Remember you will need to install [Seneca.js][] if you haven't already.

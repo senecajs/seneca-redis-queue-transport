@@ -1,8 +1,20 @@
 language: node_js
-node_js:
-  - "0.10"
-  - "0.12"
-  - "4"
-  - "5"
+
 services:
   - redis-server
+
+env:
+  - SENECA_VER=@1.x.x
+  - SENECA_VER=@2.x.x
+  - SENECA_VER=@3.x.x
+
+node_js:
+  - "4"
+  - "6"
+
+before_script:
+  - npm uninstall seneca
+  - npm install seneca$SENECA_VER
+
+after_script:
+  - npm run coveralls
