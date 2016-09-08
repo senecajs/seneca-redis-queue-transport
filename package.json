@@ -11,17 +11,18 @@
     "Cristian Kiss (https://github.com/ckiss)",
     "Wyatt Preul (https://github.com/geek)",
     "Josh Reeter (https://github.com/jreeter)",
-    "Shane Lacey (https://github.com/shanel262)"
+    "Shane Lacey (https://github.com/shanel262)",
+    "David Gonzalez (https://github.com/dgonzalez)"
   ],
   "scripts": {
-    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 95 -c",
+    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 89 -c",
     "lint": "lab -P test -dL",
     "annotate": "docco redis-queue-transport.js -o docs/annotated",
     "build": "docker-compose build",
     "start": "docker-compose up",
     "stop": "docker-compose kill",
     "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 95 -r html > docs/coverage.html"
+    "coverage": "lab -v -P test -L -t 89 -r html > docs/coverage.html"
   },
   "keywords": [
     "seneca",
@@ -43,15 +44,15 @@
     "redis": "2.x.x"
   },
   "devDependencies": {
-    "async": "1.x.x",
-    "code": "1.x.x",
+    "async": "2.x.x",
+    "code": "3.x.x",
     "coveralls": "2.11.x",
     "docco": "0.7.0",
-    "eslint-config-seneca": "1.x.x",
-    "eslint-plugin-standard": "1.x.x",
-    "lab": "6.x.x",
+    "eslint-config-seneca": "3.x.x",
+    "eslint-plugin-standard": "2.x.x",
+    "lab": "11.x.x",
     "pre-commit": "1.1.x",
-    "seneca": "1.1.0",
+    "seneca": "plugin",
     "seneca-transport-test": "0.1.3"
   },
   "files": [
