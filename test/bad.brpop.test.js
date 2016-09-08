@@ -23,7 +23,7 @@ _.assign(internals.defaults['redis-queue'], DefaultConfig)
 
 var brpop = require('redis').RedisClient.prototype.brpop
 
-describe('redis-transport', function () {
+describe.skip('redis-transport', function () {
   test('brpop returns error', function (fin) {
     var seneca_srv = require('seneca')({ log: 'silent' })
       .use(RedisQueueTransport)

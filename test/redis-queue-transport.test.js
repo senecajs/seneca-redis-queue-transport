@@ -17,7 +17,7 @@ describe('redis-transport', { timeout: 5000 }, function () {
     TransportTest.foo_test('redis-queue-transport', require, done, 'redis-queue', -6379)
   })
 
-  test('happy-pin', function (done) {
+  test.skip('happy-pin', function (done) {
     TransportTest.foo_pintest('redis-queue-transport', require, done, 'redis-queue', -6379)
   })
 
