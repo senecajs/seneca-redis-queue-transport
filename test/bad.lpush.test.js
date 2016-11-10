@@ -23,7 +23,7 @@ _.assign(internals.defaults['redis-queue'], DefaultConfig)
 
 var lpush = require('redis').RedisClient.prototype.lpush
 
-describe('redis-transport', function () {
+describe.skip('redis-transport', function () {
   test('bad lpush client', function (fin) {
     var seneca_srv = require('seneca')({log: 'silent'})
       .use(RedisQueueTransport)

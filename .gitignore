@@ -28,3 +28,6 @@ node_modules
 .idea
 
 *~
+
+docs/annotated
+docs/coverage.html
