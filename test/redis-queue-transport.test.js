@@ -20,14 +20,14 @@ describe('redis-transport', { timeout: 5000 }, function () {
       url: 'redis://localhost:6379'
     }).use('../redis-queue-transport.js')
   }
-  
+
   TransportTest.basictest({
     seneca: senecaInstance(),
     type: 'redis-queue',
     port: -6379,
     script: lab
   })
-  
+
   TransportTest.basicpintest({
     seneca: senecaInstance(),
     type: 'redis-queue',
