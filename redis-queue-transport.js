@@ -35,8 +35,17 @@ module.exports = function (options) {
     var type = args.type
     var listenOptions = seneca.util.clean(_.extend({}, options[type], args))
     var useTopic = args.topic || 'seneca_any'
-    var redisIn = Redis.createClient(listenOptions.port, listenOptions.host)
-    var redisOut = Redis.createClient(listenOptions.port, listenOptions.host)
+    var redisIn
+    var redisOut
+
+    if (listenOptions.hasOwnProperty('url')) {
+      redisIn = Redis.createClient(listenOptions.url)
+      redisOut = Redis.createClient(listenOptions.url)
+    }
+    else {
+      redisIn = Redis.createClient(listenOptions.port, listenOptions.host)
+      redisOut = Redis.createClient(listenOptions.port, listenOptions.host)
+    }
 
     handleEvents(redisIn)
     handleEvents(redisOut)
@@ -91,8 +100,14 @@ module.exports = function (options) {
 
     tu.make_client(makeSend, clientOptions, clientdone)
 
-    redisIn = Redis.createClient(clientOptions.port, clientOptions.host)
-    redisOut = Redis.createClient(clientOptions.port, clientOptions.host)
+    if (clientOptions.hasOwnProperty('url')) {
+      redisIn = Redis.createClient(clientOptions.url)
+      redisOut = Redis.createClient(clientOptions.url)
+    }
+    else {
+      redisIn = Redis.createClient(clientOptions.port, clientOptions.host)
+      redisOut = Redis.createClient(clientOptions.port, clientOptions.host)
+    }
 
     handleEvents(redisIn)
     handleEvents(redisOut)
@@ -147,3 +162,4 @@ module.exports = function (options) {
     name: plugin
   }
 }
+
