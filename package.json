@@ -16,14 +16,14 @@
     "Arsen A. Gutsal(https://github.com/softsky)"
   ],
   "scripts": {
-    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 89 -c",
+    "test": "lab test/*.test.js -r console -v -L -m 3000 -t 87 -c",
     "lint": "lab -P test -dL",
     "annotate": "docco redis-queue-transport.js -o docs/annotated",
     "build": "docker-compose build",
     "start": "docker-compose up",
     "stop": "docker-compose kill",
     "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 89 -r html > docs/coverage.html"
+    "coverage": "lab -v -P test -L -t 87 -r html > docs/coverage.html"
   },
   "keywords": [
     "seneca",

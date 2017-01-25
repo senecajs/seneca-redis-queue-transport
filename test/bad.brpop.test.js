@@ -8,6 +8,7 @@ var _ = require('lodash')
 
 var RedisQueueTransport = require('../redis-queue-transport.js')
 var DefaultConfig = require('./default_config.json')
+var RedisUrlConfig = require('./redis_url_config.json')
 
 // Test shortcuts
 var lab = exports.lab = Lab.script()
@@ -20,6 +21,7 @@ var internals = {
   }
 }
 _.assign(internals.defaults['redis-queue'], DefaultConfig)
+_.assign(internals.defaults['redis-queue'], RedisUrlConfig)
 
 var brpop = require('redis').RedisClient.prototype.brpop
 
