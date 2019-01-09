@@ -115,8 +115,8 @@ module.exports = function (options) {
     blockingRead(useTopic)
 
     function makeSend (spec, topic, send_done) {
-      send_done(null, function (localArgs, done) {
-        var outmsg = tu.prepare_request(this, localArgs, done)
+      send_done(null, function (localArgs, done, meta) {
+        var outmsg = tu.prepare_request(this, localArgs, done, meta)
         var outstr = tu.stringifyJSON(seneca, 'client-' + type, outmsg)
 
         redisOut.rpush(useTopic + '_act', outstr, function (err, reply) {
