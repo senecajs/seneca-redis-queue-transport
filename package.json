@@ -34,7 +34,7 @@
   "homepage": "https://github.com/senecajs/seneca-redis-queue-transport",
   "repository": {
     "type": "git",
-    "url": "git://github.com/iantocristian/seneca-redis-queue-transport.git"
+    "url": "git://github.com/senecajs/seneca-redis-queue-transport.git"
   },
   "bugs": {
     "url": "https://github.com/senecajs/seneca-redis-queue-transport/issues"
