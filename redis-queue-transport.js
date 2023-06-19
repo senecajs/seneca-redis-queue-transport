@@ -16,21 +16,29 @@ var internals = {
   }
 }
 
-module.exports = function (options) {
+module.exports = function(options) {
   var seneca = this
   var plugin = 'redis-queue-transport'
   var so = seneca.options()
   var tu
 
-  internals.defaults.timeout = so.timeout ? (so.timeout - 555) : internals.defaults.timeout
+  internals.defaults.timeout = so.timeout
+    ? so.timeout - 555
+    : internals.defaults.timeout
   options = seneca.util.deepextend(internals.defaults, so.transport, options)
 
   tu = seneca.export('transport/utils')
 
-  seneca.add({role: 'transport', hook: 'listen', type: 'redis-queue'}, hookListenRedis)
-  seneca.add({role: 'transport', hook: 'client', type: 'redis-queue'}, hookClientRedis)
+  seneca.add(
+    { role: 'transport', hook: 'listen', type: 'redis-queue' },
+    hookListenRedis
+  )
+  seneca.add(
+    { role: 'transport', hook: 'client', type: 'redis-queue' },
+    hookClientRedis
+  )
 
-  function hookListenRedis (args, done) {
+  function hookListenRedis(args, done) {
     var seneca = this
     var type = args.type
     var listenOptions = seneca.util.clean(_.extend({}, options[type], args))
@@ -41,16 +49,18 @@ module.exports = function (options) {
     handleEvents(redisIn)
     handleEvents(redisOut)
 
-    function onMessage (topic, msgstr) {
+    function onMessage(topic, msgstr) {
       var data = tu.parseJSON(seneca, 'listen-' + type, msgstr)
 
-      tu.handle_request(seneca, data, listenOptions, function (out) {
+      tu.handle_request(seneca, data, listenOptions, function(out) {
         if (out === null) {
           return
         }
 
         var outstr = tu.stringifyJSON(seneca, 'listen-' + type, out)
-        redisOut.lpush(topic + '_res' + '/' + data.origin, outstr, function (err, reply) {
+        redisOut.lpush(topic + '_res' + '/' + data.origin, outstr, function(
+          err
+        ) {
           if (err) {
             seneca.log.error('transport', 'redis-queue', err)
           }
@@ -58,9 +68,11 @@ module.exports = function (options) {
       })
     }
 
-    var blockingRead = function blockingRead (topic) {
-      redisIn.blpop(topic + '_act', 0, function (err, reply) {
-        if (err) { return seneca.log.error('transport', 'server-redis-brpop', err) }
+    var blockingRead = function blockingRead(topic) {
+      redisIn.blpop(topic + '_act', 0, function(err, reply) {
+        if (err) {
+          return seneca.log.error('transport', 'server-redis-brpop', err)
+        }
         if (reply && reply.length) {
           onMessage(topic, reply[1])
         }
@@ -69,7 +81,7 @@ module.exports = function (options) {
     }
     blockingRead(useTopic)
 
-    seneca.add('role:seneca,cmd:close', function (closeArgs, done) {
+    seneca.add('role:seneca,cmd:close', function(closeArgs, done) {
       var closer = this
       redisIn.end(true)
       redisOut.end(true)
@@ -81,7 +93,7 @@ module.exports = function (options) {
     done()
   }
 
-  function hookClientRedis (args, clientdone) {
+  function hookClientRedis(args, clientdone) {
     var seneca = this
     var type = args.type
     var clientOptions = seneca.util.clean(_.extend({}, options[type], args))
@@ -97,14 +109,16 @@ module.exports = function (options) {
     handleEvents(redisIn)
     handleEvents(redisOut)
 
-    function onMessage (topic, msgstr) {
+    function onMessage(topic, msgstr) {
       var input = tu.parseJSON(seneca, 'client-' + type, msgstr)
       tu.handle_response(seneca, input, clientOptions)
     }
 
-    var blockingRead = function blockingRead (topic) {
-      redisIn.brpop(topic + '_res' + '/' + seneca.id, 0, function (err, reply) {
-        if (err) { return seneca.log.error('transport', 'server-redis-brpop', err) }
+    var blockingRead = function blockingRead(topic) {
+      redisIn.brpop(topic + '_res' + '/' + seneca.id, 0, function(err, reply) {
+        if (err) {
+          return seneca.log.error('transport', 'server-redis-brpop', err)
+        }
         if (reply && reply.length) {
           onMessage(topic, reply[1])
         }
@@ -114,19 +128,19 @@ module.exports = function (options) {
 
     blockingRead(useTopic)
 
-    function makeSend (spec, topic, send_done) {
-      send_done(null, function (localArgs, done) {
+    function makeSend(spec, topic, send_done) {
+      send_done(null, function(localArgs, done) {
         var outmsg = tu.prepare_request(this, localArgs, done)
         var outstr = tu.stringifyJSON(seneca, 'client-' + type, outmsg)
 
-        redisOut.rpush(useTopic + '_act', outstr, function (err, reply) {
+        redisOut.rpush(useTopic + '_act', outstr, function(err) {
           if (err) {
             seneca.log.error('transport', 'redis-queue', err)
           }
         })
       })
 
-      seneca.add('role:seneca, cmd:close', function (closeArgs, done) {
+      seneca.add('role:seneca, cmd:close', function(closeArgs, done) {
         var closer = this
         redisIn.quit()
         redisOut.quit()
@@ -135,9 +149,9 @@ module.exports = function (options) {
     }
   }
 
-  function handleEvents (redisclient) {
-    redisclient.once('ready', function () {
-      redisclient.on('error', function (err) {
+  function handleEvents(redisclient) {
+    redisclient.once('ready', function() {
+      redisclient.on('error', function(err) {
         seneca.log.error('transport', 'redis', err)
       })
     })
