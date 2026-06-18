@@ -31,3 +31,4 @@ node_modules
 
 docs/annotated
 docs/coverage.html
+package-lock.json
