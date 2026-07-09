@@ -1,7 +1,39 @@
 ![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
 > A [Seneca.js][] plugin
 
-# @seneca/redis-queue-transport
+# seneca-redis-queue-transport
+[![npm version][npm-badge]][npm-url]
+[![Build Status][travis-badge]][travis-url]
+[![Gitter][gitter-badge]][gitter-url]
+
+| ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
+|---|---|
+
+This plugin provides transport for micro-service messages via Redis (list based) queues.
+This lets you send messsages via [redis](http://redis.io/).
+
+ALSO READ: The [seneca-transport](http://github.com/rjrodger/seneca-transport) readme has lots of introductory material about message transports. Start there if you have not used a message transport before.
+
+- __Node:__ 4, 6
+- __License:__ [MIT][]
+
+seneca-redis-queue-transport's source can be read in an annotated fashion by,
+
+- running `npm run annotate`
+- viewing [online](https://github.com/senecajs/seneca-redis-queue-transport/doc/redis-queue-transport.html).
+
+The annotated source can be found locally at [./doc/redis-queue-transport.html]().
+
+If you're using this module, and need help, you can:
+
+- Post a [github issue][],
+- Tweet to [@senecajs][],
+- Ask on the [Gitter][gitter-url].
+
+If you are new to Seneca in general, please take a look at [senecajs.org][]. We have everything from
+tutorials to sample apps to help get you up and running quickly.
+
+### Seneca compatibility
 
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
 |---|---|
