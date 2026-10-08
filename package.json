@@ -49,6 +49,12 @@
     "redis-queue-transport.js"
   ],
   "peerDependencies": {
-    "seneca": ">=3 || >=4.0.0-rc5"
+    "seneca": ">=3 || >=4.0.0-rc5",
+    "seneca-transport": ">=8"
+  },
+  "peerDependenciesMeta": {
+    "seneca-transport": {
+      "optional": true
+    }
   }
 }
