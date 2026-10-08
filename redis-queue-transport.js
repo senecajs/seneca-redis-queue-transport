@@ -27,6 +27,17 @@ module.exports = function (options) {
 
   tu = seneca.export('transport/utils')
 
+  // Seneca 4 has no network transport in core, and its core transport/utils
+  // export lacks the helpers used here; they come from seneca-transport.
+  if (!tu || 'function' !== typeof tu.make_client) {
+    throw new Error(plugin + ': load seneca-transport before this plugin, ' +
+      "for example seneca.use('seneca-transport').use('" + plugin + "')")
+  }
+
+  // Seneca 3 closes via role:seneca,cmd:close; Seneca 4 via sys:seneca,cmd:close.
+  var closePattern = seneca.version.startsWith('3.')
+    ? 'role:seneca,cmd:close' : 'sys:seneca,cmd:close'
+
   seneca.add({role: 'transport', hook: 'listen', type: 'redis-queue'}, hookListenRedis)
   seneca.add({role: 'transport', hook: 'client', type: 'redis-queue'}, hookClientRedis)
 
@@ -69,7 +80,7 @@ module.exports = function (options) {
     }
     blockingRead(useTopic)
 
-    seneca.add('role:seneca,cmd:close', function (closeArgs, done) {
+    seneca.add(closePattern, function (closeArgs, done) {
       var closer = this
       redisIn.end(true)
       redisOut.end(true)
@@ -126,9 +137,10 @@ module.exports = function (options) {
         })
       })
 
-      seneca.add('role:seneca, cmd:close', function (closeArgs, done) {
+      seneca.add(closePattern, function (closeArgs, done) {
         var closer = this
-        redisIn.quit()
+        // redisIn is blocked in BRPOP, so QUIT would never be sent; end it.
+        redisIn.end(true)
         redisOut.quit()
         closer.prior(closeArgs, done)
       })

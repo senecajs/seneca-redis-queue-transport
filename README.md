@@ -1,39 +1,16 @@
 ![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
 > A [Seneca.js][] plugin
 
-# seneca-redis-queue-transport
+# @seneca/redis-queue-transport
+
+A Seneca message transport over Redis lists used as queues. Clients push
+requests onto a Redis list and any number of listeners take them off in
+order, so work is shared between services and waits in Redis while no
+service is running. Works with Seneca 4 (including the `4.0.0-rc5`
+prerelease, with [seneca-transport][]) and Seneca 3, on Node 22 and 24.
+
 [![npm version][npm-badge]][npm-url]
-[![Build Status][travis-badge]][travis-url]
 [![Gitter][gitter-badge]][gitter-url]
-
-| ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
-|---|---|
-
-This plugin provides transport for micro-service messages via Redis (list based) queues.
-This lets you send messsages via [redis](http://redis.io/).
-
-ALSO READ: The [seneca-transport](http://github.com/rjrodger/seneca-transport) readme has lots of introductory material about message transports. Start there if you have not used a message transport before.
-
-- __Node:__ 4, 6
-- __License:__ [MIT][]
-
-seneca-redis-queue-transport's source can be read in an annotated fashion by,
-
-- running `npm run annotate`
-- viewing [online](https://github.com/senecajs/seneca-redis-queue-transport/doc/redis-queue-transport.html).
-
-The annotated source can be found locally at [./doc/redis-queue-transport.html]().
-
-If you're using this module, and need help, you can:
-
-- Post a [github issue][],
-- Tweet to [@senecajs][],
-- Ask on the [Gitter][gitter-url].
-
-If you are new to Seneca in general, please take a look at [senecajs.org][]. We have everything from
-tutorials to sample apps to help get you up and running quickly.
-
-### Seneca compatibility
 
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
 |---|---|
@@ -41,81 +18,101 @@ tutorials to sample apps to help get you up and running quickly.
 ## Install
 
 ```sh
-npm install seneca-redis-queue-transport
+npm install seneca seneca-transport @seneca/redis-queue-transport
 ```
+
+Releases up to 0.3.0 were published as `seneca-redis-queue-transport`.
+You also need a Redis server.
 
 ## Quick Example
 
 ```js
-require('seneca')()
-  .use('redis-queue-transport')
-  .add('foo:two',function(args,done){ done(null,{bar:args.bar}) })
-  .client( {type:'redis-queue',pin:'foo:one,bar:*'} )
-  .listen( {type:'redis-queue',pin:'foo:two,bar:*'} )
+const Seneca = require('seneca')
+const redis = { type: 'redis-queue', host: '127.0.0.1', port: 6379 }
+
+const service = Seneca()
+  .use('seneca-transport')
+  .use('@seneca/redis-queue-transport')
+  .add('color:red', (msg, reply) => reply(null, { hex: '#FF0000' }))
+  .listen(redis)
+
+const client = Seneca()
+  .use('seneca-transport')
+  .use('@seneca/redis-queue-transport')
+  .client(redis)
+
+client.act('color:red', (err, out) => {
+  console.log(out) // { hex: '#FF0000' }
+  client.close(() => service.close())
+})
 ```
 
 ## More Examples
 
-See [test/](test/) for usage examples.
+* [Getting started](docs/tutorials/getting-started.md): a service and a
+  client in one program, step by step.
+* [Use a named topic](docs/how-to/use-a-named-topic.md).
+* [Run the tests locally](docs/how-to/run-the-tests-locally.md).
+* Runnable programs: [docs/examples](docs/examples/).
 
 ## Motivation
 
-This plugin provides transport for micro-service messages via Redis list-based queues.
+Request and response transports need the service to be up when the client
+calls. A queue in Redis lets requests wait, and spreads them across as many
+listeners as you run. See
+[How the queue transport works](docs/explanation/how-it-works.md).
 
 ## Support
 
-If you're using this module and need help, you can:
-
-- Post a [github issue][]
-- Tweet to [@senecajs][]
-- Ask on the [Gitter][gitter-url]
+* Report problems on the [GitHub issue tracker][github issue].
+* Seneca documentation: [senecajs.org][] and the
+  [Seneca repository docs](https://github.com/senecajs/seneca/tree/master/docs).
+* Commercial support: [Voxgig](https://www.voxgig.com).
 
 ## API
 
-### Available Options
+Full documentation index: [docs/README.md](docs/README.md).
 
-```js
-require('seneca')()
-  .use('redis-queue-transport', {
-    'redis-queue': {
-      timeout: 22222,
-      type: 'redis-queue',
-      host: 'localhost',
-      port: 6379
-    }
-  })
-```
+| Item | Summary | Reference |
+| ---- | ------- | --------- |
+| `listen({ type: 'redis-queue', host, port, topic })` | Take requests from `<topic>_act`. | [Messages](docs/reference/messages.md) |
+| `client({ type: 'redis-queue', host, port, topic, pin })` | Send requests to `<topic>_act`, read replies. | [Messages](docs/reference/messages.md) |
+| Plugin option `redis-queue` | Default `host`, `port`, `timeout`. | [Options](docs/reference/options.md) |
 
 ## Contributing
 
-The [Senecajs org][] encourages open participation. If you feel you can help in any way, be it with documentation, examples, extra testing, or new features please get in touch.
-
-### Running tests with Docker
+The [Senecajs org][] encourages open participation. To run the tests you
+need Docker and Node 24 or 22:
 
 ```sh
-npm run build
-npm run start
-npm run test
-npm run stop
+npm run services:up    # redis:8.10 on host port 16383
+npm install
+npm test               # runs against the seneca 4 prerelease devDependency
+npm run services:down
 ```
+
+The CI workflow is kept as a patch in [.patches](.patches/README.md); apply
+it with `git am .patches/*.patch`.
 
 ## Background
 
-See [seneca-transport](http://github.com/rjrodger/seneca-transport) for introductory material about message transports.
+Written by Cristian Ianto for Seneca 1 to 3. Updated for Seneca 4 in
+version 0.4.0 (see [CHANGES.md](CHANGES.md)).
 
-[![npm version][npm-badge]][npm-url]
-[![Build Status][travis-badge]][travis-url]
-[![Gitter][gitter-badge]][gitter-url]
+| Plugin | Seneca | Node | Notes |
+| ------ | ------ | ---- | ----- |
+| 0.4.x | 4 (load `seneca-transport` first), 3 | 22, 24 | |
+| 0.3.x | 1 to 3 | 4, 6 | Not tested on current Node. |
+
+License: [MIT][].
+
 [npm-badge]: https://badge.fury.io/js/seneca-redis-queue-transport.svg
 [npm-url]: https://badge.fury.io/js/seneca-redis-queue-transport
-[travis-badge]: https://travis-ci.org/senecajs/seneca-redis-queue-transport.svg
-[travis-url]: https://travis-ci.org/senecajs/seneca-redis-queue-transport
 [gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/senecajs/seneca
 [MIT]: ./LICENSE
 [Senecajs org]: https://github.com/senecajs/
 [Seneca.js]: https://www.npmjs.com/package/seneca
 [senecajs.org]: http://senecajs.org/
-[redis]: http://redis.io/
+[seneca-transport]: https://github.com/senecajs/seneca-transport
 [github issue]: https://github.com/senecajs/seneca-redis-queue-transport/issues
-[@senecajs]: http://twitter.com/senecajs

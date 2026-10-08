@@ -1,14 +1,12 @@
-base:
-  build: ./
-server:
-  extends:
-    service: base
-  expose:
-    - "8000"
-  entrypoint: node /seneca-redis-queue-transport/server
-client:
-  extends:
-    service: base
-  links:
-   - server
-  entrypoint: node /seneca-redis-queue-transport/client
+name: seneca-redis-queue-transport
+services:
+  redis:
+    image: redis:8.10
+    container_name: seneca-redis-queue-transport-redis
+    ports:
+      - "16383:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
