@@ -11,7 +11,7 @@ const redis = {
 
 function make() {
   return Seneca({ log: 'silent' })
-    .use('seneca-transport')
+    .use('@seneca/transport')
     .use(require('../../redis-queue-transport.js'))
 }
 

@@ -9,7 +9,7 @@ const redis = {
 }
 
 const service = Seneca({ log: 'silent' })
-  .use('seneca-transport')
+  .use('@seneca/transport')
   .use(require('../../redis-queue-transport.js'))
   .add('color:red', function (msg, reply) {
     reply(null, { hex: '#FF0000', asked_by: msg.name })
@@ -18,7 +18,7 @@ const service = Seneca({ log: 'silent' })
 
 service.ready(function () {
   const client = Seneca({ log: 'silent' })
-    .use('seneca-transport')
+    .use('@seneca/transport')
     .use(require('../../redis-queue-transport.js'))
     .client(redis)
 

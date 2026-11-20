@@ -5,17 +5,18 @@ each other through Redis lists. It takes about five minutes.
 
 ## What you need
 
-* Node.js 22 or 24.
+* Node.js 24 or later.
 * Docker, to run Redis. Any Redis server you can reach works too.
 
 ## 1. Install
 
 ```sh
-npm install seneca seneca-transport @seneca/redis-queue-transport
+npm install seneca@^4 @seneca/transport @seneca/redis-queue-transport
 ```
 
-`seneca-transport` is required on Seneca 4: it provides the transport
-utilities this plugin is built on.
+`@seneca/transport` is required on Seneca 4: it provides the transport
+utilities this plugin is built on. Ask for `seneca@^4`: a bare `seneca`
+installs the 3.x `latest` release until Seneca 4 becomes `latest`.
 
 ## 2. Start Redis
 
@@ -43,7 +44,7 @@ const redis = {
 }
 
 const service = Seneca({ log: 'silent' })
-  .use('seneca-transport')
+  .use('@seneca/transport')
   .use(require('../../redis-queue-transport.js'))
   .add('color:red', function (msg, reply) {
     reply(null, { hex: '#FF0000', asked_by: msg.name })
@@ -52,7 +53,7 @@ const service = Seneca({ log: 'silent' })
 
 service.ready(function () {
   const client = Seneca({ log: 'silent' })
-    .use('seneca-transport')
+    .use('@seneca/transport')
     .use(require('../../redis-queue-transport.js'))
     .client(redis)
 
@@ -79,7 +80,7 @@ with `'@seneca/redis-queue-transport'`.
 node docs/examples/getting-started.js
 ```
 
-Output (with `seneca@4.0.0-rc5`):
+Output (with `seneca@4.0.0`):
 
 ```
 reply: { hex: '#FF0000', asked_by: 'alice' }

@@ -19,13 +19,12 @@ Called by Seneca for `seneca.client({ type: 'redis-queue', ... })`.
   `<topic>_res/<this instance id>`, and adds client actions for the `pin`
   (or for every unmatched message) that `RPUSH` the message to
   `<topic>_act`. Registers a close hook.
-* Reply: the client definition from seneca-transport.
+* Reply: the client definition from `@seneca/transport`.
 
 ## Close hooks
 
-Each listener and client adds an override of the close pattern:
-`sys:seneca,cmd:close` on Seneca 4, `role:seneca,cmd:close` on Seneca 3.
-It ends the Redis connections and then calls the prior close action.
+Each listener and client adds an override of the close pattern
+`sys:seneca,cmd:close`. It ends the Redis connections and then calls the prior close action.
 
 ## Redis keys
 
@@ -35,7 +34,7 @@ It ends the Redis connections and then calls the prior close action.
 | `<topic>_res/<client instance id>` | list | listener, `LPUSH` | client, `BRPOP` |
 
 `<topic>` is the `topic` setting, `seneca_any` by default. Values are the
-JSON messages produced by seneca-transport.
+JSON messages produced by `@seneca/transport`.
 
 ## Errors
 
@@ -45,4 +44,4 @@ with `seneca.log.error`.
 
 | Error | When |
 | ----- | ---- |
-| `redis-queue-transport: load seneca-transport before this plugin, ...` | The plugin is loaded on an instance whose `transport/utils` export has no `make_client` (Seneca 4 without seneca-transport). Loading fails. |
+| `redis-queue-transport: load @seneca/transport before this plugin, ...` | The plugin is loaded on an instance whose `transport/utils` export has no `make_client` (Seneca 4 without `@seneca/transport`). Loading fails. |

@@ -12,7 +12,7 @@ options block if there is one.
 | `redis-queue.type` | string | `'redis-queue'` | Carried into the settings; the transport type is the `type` of each call. |
 | `redis-queue.host` | string | `'localhost'` | Redis host, used only when a call has no `host`. |
 | `redis-queue.port` | number | `6379` | Redis port, used only when a call has no `port`. |
-| `redis-queue.timeout` | number | `22222` | Carried into the settings; not read by this plugin. Use the Seneca `timeout` option for action timeouts. |
+| `redis-queue.timeout` | number | Seneca `timeout` option minus 555 (21667 with the Seneca 4 default of 22222), or `22222` if Seneca has no `timeout` | Carried into the settings; not read by this plugin. Use the Seneca `timeout` option for action timeouts. |
 
 Seneca supplies `host` and `port` defaults (port 10101) to every `listen`
 and `client` call, and those override `redis-queue.host` and
