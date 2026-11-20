@@ -1,6 +1,6 @@
 {
   "name": "@seneca/redis-queue-transport",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Seneca Redis Queue Transport",
   "main": "redis-queue-transport.js",
   "license": "MIT",
@@ -29,7 +29,13 @@
   "homepage": "https://github.com/senecajs/seneca-redis-queue-transport",
   "repository": {
     "type": "git",
-    "url": "git://github.com/senecajs/seneca-redis-queue-transport.git"
+    "url": "git+https://github.com/senecajs/seneca-redis-queue-transport.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "bugs": {
     "url": "https://github.com/senecajs/seneca-redis-queue-transport/issues"
@@ -39,8 +45,8 @@
     "redis": "^2.8.0"
   },
   "devDependencies": {
-    "seneca": "^4.0.0-rc5",
-    "seneca-transport": "^8.3.0"
+    "@seneca/transport": "^9.0.0",
+    "seneca": "^4.0.0"
   },
   "files": [
     "README.md",
@@ -49,12 +55,7 @@
     "redis-queue-transport.js"
   ],
   "peerDependencies": {
-    "seneca": ">=3 || >=4.0.0-rc5",
-    "seneca-transport": ">=8"
-  },
-  "peerDependenciesMeta": {
-    "seneca-transport": {
-      "optional": true
-    }
+    "@seneca/transport": "^9.0.0",
+    "seneca": "^4.0.0"
   }
 }

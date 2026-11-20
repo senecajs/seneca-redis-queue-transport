@@ -11,10 +11,10 @@ const config = {
   port: parseInt(process.env.SENECA_TEST_REDIS_PORT || '16383', 10),
 }
 
-// A Seneca instance with seneca-transport and this plugin loaded.
+// A Seneca instance with @seneca/transport and this plugin loaded.
 function make (opts) {
   return Seneca(Object.assign({ log: 'silent' }, opts))
-    .use('seneca-transport')
+    .use('@seneca/transport')
     .use(RedisQueueTransport)
 }
 
