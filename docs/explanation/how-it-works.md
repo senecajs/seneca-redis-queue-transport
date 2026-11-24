@@ -9,7 +9,7 @@ makes it a queue transport: adding listeners spreads the load, and
 requests wait in Redis while no listener is running.
 
 Each client has its own reply list, `<topic>_res/<client instance id>`.
-The listener knows the id from the `origin` field that seneca-transport
+The listener knows the id from the `origin` field that `@seneca/transport`
 puts in each request. The client blocks on its reply list with `BRPOP`
 and matches replies to callbacks by message id.
 
@@ -19,20 +19,19 @@ A Redis connection blocked in `BLPOP` or `BRPOP` cannot send other
 commands, so each listener and each client opens one connection for the
 blocking read and one for writing.
 
-## Built on seneca-transport
+## Built on @seneca/transport
 
 The plugin does not encode messages itself. It uses the helpers of the
 `transport/utils` export (`make_client`, `prepare_request`,
 `handle_request`, `handle_response`, `parseJSON`, `stringifyJSON`). On
-Seneca 3 those come with core. On Seneca 4 core has no network transport
-and a smaller `transport/utils`, so `seneca-transport` must be loaded
+Seneca 3 those came with core. On Seneca 4 core has no network transport
+and a smaller `transport/utils`, so `@seneca/transport` must be loaded
 first; the plugin checks this when it is defined.
 
 ## Closing
 
-Seneca 4 closes an instance through `sys:seneca,cmd:close`; Seneca 3
-through `role:seneca,cmd:close`. The plugin chooses the pattern from
-`seneca.version` and overrides it for each listener and client. The
+Seneca 4 closes an instance through `sys:seneca,cmd:close`. The plugin
+overrides that pattern for each listener and client. The
 blocked reading connection is ended with `end(true)`, because a `QUIT`
 command would wait behind the blocking read forever and keep the process
 alive.

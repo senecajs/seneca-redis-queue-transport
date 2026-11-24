@@ -18,7 +18,7 @@ The programs are in [examples](examples/).
 | Guide | Covers |
 | ----- | ------ |
 | [Use a named topic](how-to/use-a-named-topic.md) | Give a service its own pair of Redis lists. |
-| [Run the tests locally](how-to/run-the-tests-locally.md) | Docker Compose, environment variables, Seneca 4 builds, Node 22. |
+| [Run the tests locally](how-to/run-the-tests-locally.md) | Docker Compose, environment variables, Seneca 4 builds. |
 | [Migrate from Seneca 3](how-to/migrate-from-seneca-3.md) | What to change when moving an application to Seneca 4. |
 
 ## Reference
@@ -32,7 +32,7 @@ The programs are in [examples](examples/).
 
 | Explanation | Discusses |
 | ----------- | --------- |
-| [How the queue transport works](explanation/how-it-works.md) | Lists, blocking reads, replies, closing, Seneca 3 versus 4, limits. |
+| [How the queue transport works](explanation/how-it-works.md) | Lists, blocking reads, replies, closing, limits. |
 
 ## Feature index
 
@@ -54,6 +54,6 @@ command line flags.
 | `pin` | client setting | [Options](reference/options.md#listen-and-client-settings) |
 | `role:transport,hook:listen,type:redis-queue` | action | [Messages](reference/messages.md#roletransporthooklistentyperedis-queue) |
 | `role:transport,hook:client,type:redis-queue` | action | [Messages](reference/messages.md#roletransporthookclienttyperedis-queue) |
-| `sys:seneca,cmd:close` (Seneca 4) / `role:seneca,cmd:close` (Seneca 3) | action override | [Messages](reference/messages.md#close-hooks) |
+| `sys:seneca,cmd:close` | action override | [Messages](reference/messages.md#close-hooks) |
 | `<topic>_act`, `<topic>_res/<client id>` | Redis keys | [Messages](reference/messages.md#redis-keys) |
-| "load seneca-transport before this plugin" | definition error | [Messages](reference/messages.md#errors) |
+| "load @seneca/transport before this plugin" | definition error | [Messages](reference/messages.md#errors) |
